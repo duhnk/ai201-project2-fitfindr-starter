@@ -264,5 +264,32 @@ def create_fit_card(outfit: str, new_item: dict) -> str:
 
     Before writing code, fill in the Tool 3 section of planning.md.
     """
-    # Replace this with your implementation
-    return ""
+    # 1. Guard against an empty / whitespace-only outfit — return an error
+    #    string rather than raising or calling the LLM with nothing to work from.
+    if not outfit or not outfit.strip():
+        return "Error: no outfit was provided, so there is no fit card to create."
+
+    system = (
+        "You are FitFindr, writing playful, authentic OOTD captions for social "
+        "media. Sound like a real person posting a thrift find — not a product "
+        "listing. Emojis and hashtags are welcome but keep it natural."
+    )
+
+    price = new_item.get("price")
+    price_str = f"${price:.0f}" if price is not None else "a steal"
+
+    # 2. Give the LLM the item details + the outfit, and the style rules.
+    prompt = (
+        f"Write a short, shareable Instagram/TikTok caption (2-4 sentences) for "
+        f"a thrifted outfit.\n\n"
+        f"Item: {new_item.get('title', 'this piece')}\n"
+        f"Price: {price_str}\n"
+        f"Platform: {new_item.get('platform', 'a thrift app')}\n"
+        f"Outfit: {outfit}\n\n"
+        "Mention the item name, price, and platform naturally — each exactly "
+        "once. Capture the outfit's vibe in specific terms. Keep it casual and "
+        "authentic, like a real OOTD post."
+    )
+
+    # 3. Higher temperature so captions feel fresh and vary between runs.
+    return _chat(prompt, temperature=0.9, system=system)

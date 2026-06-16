@@ -59,3 +59,6 @@ wardrobe = get_example_wardrobe()
 3. Build and test each tool individually before connecting them through your planning loop.
 
 Your implementation files go in this same directory. There's no required file structure for your agent code — organize it however makes sense for your design.
+
+# AI usage
+used it on the tools to get a better understanding.
